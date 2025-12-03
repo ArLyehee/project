@@ -23,6 +23,13 @@ app.get('/cart/:userId', async(req, res)=>{
     }
 })
 
+app.put('/cart/update', async(req,res)=>{
+    await pool.query('UPDATE cart SET amount = ? WHERE pId = ?',
+        [req.body.amount, req.body.pId]
+    )
+    res.send({"result":true})
+})
+
 app.delete('/cart/delete', async(req,res)=>{
     const pId = req.body.pId
     await pool.query('DELETE FROM cart WHERE pId =?',

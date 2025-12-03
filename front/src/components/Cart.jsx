@@ -38,11 +38,22 @@ function Cart() {
     }
   };
 
-    const updateAmount = (id, newAmount) => {
-    if (newAmount < 1) return;
-    setItems(items.map(item => 
-      item.id === id ? { ...item, amount: newAmount } : item
-    ));
+    async function updateAmount(id, newAmount) {
+    try{
+      const response = await fetch('http://localhost:8080/cart/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pId: id, amount: newAmount }),
+      });
+      const result = await response.json();
+      if (result.result) {
+        fetchCart();
+      }
+    }catch(error){
+      console.error('수량 변경 실패:', error);
+    }
   };
 
   const totalAmount = items.reduce((sum, item) => sum + item.price * item.amount, 0);
@@ -87,4 +98,4 @@ function Cart() {
   )
 }
 
-export default Cart
+export default Cart 
