@@ -38,6 +38,12 @@ app.delete('/cart/delete', async(req,res)=>{
     res.send({"result":true})
 })
 
-app.listen(8080,()=>{
-    console.log("potato sever")
-})
+// app.listen(8080,()=>{
+//     console.log("potato server")
+// })
+
+app.get('/', (req, res) => {
+  res.send('cart 서버 응답');
+});
+
+module.exports = app;

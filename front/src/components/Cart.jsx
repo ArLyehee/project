@@ -1,9 +1,12 @@
 import {useState, useEffect} from 'react';
+import {useNavigate} from "react-router-dom";
+
 
 
 function Cart() {
 
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
   const userId = 'user213';
 
   useEffect(() => {
@@ -58,6 +61,9 @@ function Cart() {
 
   const totalAmount = items.reduce((sum, item) => sum + item.price * item.amount, 0);
 
+  const order = () => {
+    navigate('/order');
+  }
   return (
     <>
       <div>
@@ -75,6 +81,7 @@ function Cart() {
                 {/* <div>
                   <img src={item.image} alt={item.name}/>
                 </div> */}
+                <input type="checkbox"/>
                 <div>
                   <p>{item.name}</p>
                   <p>{item.price.toLocaleString()}원</p>
@@ -92,7 +99,7 @@ function Cart() {
       </div>
       <div>
         <h3>총 합계: {totalAmount.toLocaleString()}원</h3>
-        <button>주문하기</button>
+        <button onClick={order}>주문하기</button>
       </div>
     </>
   )
