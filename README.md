@@ -8,15 +8,15 @@
 
 프론트
 
-cd front -> npm run dev
+cd front -> (npm install) npm run dev
 
 백
 
 cd back
 
-npm install express cors mariadb
+npm install (express cors mariadb)
 
-npm install nodemon
+(npm install nodemon)
 
 package.json 에 11번째 줄
 "dev": "nodemon cart.js" 에서 변경 실행 가능
