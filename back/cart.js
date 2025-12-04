@@ -12,8 +12,8 @@ app.get('/cart/:userId', async(req, res)=>{
 
         const rows = await pool.query(
             `SELECT pID as id, 
-                pname as name, 
-                pprice as price,
+                pName as name, 
+                pPrice as price,
                 amount as amount 
                 FROM cart WHERE id = ?`, [userId]);
 

@@ -18,6 +18,8 @@ npm install express cors mariadb
 
 npm install nodemon
 
+npm install dotenv
+
 package.json 에 11번째 줄
 "dev": "nodemon cart.js" 에서 변경 실행 가능
 
