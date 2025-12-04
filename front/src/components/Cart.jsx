@@ -82,10 +82,15 @@ function Cart() {
           <ul>
             {items.map((item)=>(
               <li key={item.id}>
-                {/* <div>
-                  <img src={item.image} alt={item.name}/>
-                </div> */}
-                <input type="checkbox"/>
+                <div>
+                  <input type="checkbox"/>
+                  <img src={item.image} alt={item.name}
+                  style={{
+                  width: '100px',
+                  height: '100px',
+                  objectFit: 'cover'
+                  }}/>
+                </div>
                 <div>
                   <p>{item.name}</p>
                   <p>{item.price.toLocaleString()}원</p>
