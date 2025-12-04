@@ -10,7 +10,8 @@ router.get('/:userId', async(req, res)=>{
             `SELECT pID as id, 
                 pName as name, 
                 pPrice as price,
-                amount as amount 
+                amount as amount,
+                pImage as image
                 FROM cart WHERE id = ?`, [userId]);
 
         res.status(200).json(rows);

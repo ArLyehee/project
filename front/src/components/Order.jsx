@@ -71,9 +71,14 @@ const Order = () => {
                     <ul>
                       {items.map((item)=>(
                         <li key={item.id}>
-                          {/* <div>
-                            <img src={item.image} alt={item.name}/>
-                          </div> */}
+                          <div>
+                            <img src={item.image} alt={item.name}
+                            style={{
+                              width: '100px',
+                              height: '100px',
+                              objectFit: 'cover'
+                            }}/>
+                          </div>
                           <div>
                             <p>{item.name}</p>
                             <p>{item.price.toLocaleString()}원</p>
