@@ -1,9 +1,12 @@
 import {useState,useEffect} from 'react';
+import {useNavigate} from "react-router-dom";
 
 
 const Order = () => {
 
   const [items, setItems] = useState([]);
+  const [selectPay, setSelectPay] = useState('');
+  const navigate = useNavigate();
   const userId = 'user213';
 
   useEffect(() => {
@@ -30,8 +33,18 @@ const Order = () => {
     }
   };
 
+  function pass(){
+    if (!selectPay) {
+      alert('결제 방법을 선택해주세요');
+      return;
+    }
+    navigate('/done');
+  }
+  const totalAmount = items.reduce((sum, item) => sum + item.price * item.amount, 0);
+
   return (
     <>
+    <h2>주문/결제</h2>
     <button onClick={cartPage}>뒤로 돌아가기</button>
         <div>
             배송지명: <input type="text"/>
@@ -40,17 +53,16 @@ const Order = () => {
             주 소:<input type="text"/>
         </div>
         <div>
-            <h1>배송 요청사항</h1>
+            <h2>배송 요청사항</h2>
             <select>
                 <option>배송메시지를 선택해주세요.</option>
-                <option>문앞에 놔주세요</option>
-                <option>문앞에 놔</option>
-                <option>문앞에...</option>
-                <option>문앞에 좀...</option>
+                <option value="문앞에 놔주세요">문앞에 놔주세요</option>
+                <option value="배송함에 놔주세요">배송함에 놔주세요</option>
+                <option value="경비실에 놔주세요">경비실에 놔주세요</option>
+                <option value="직접수령">직접수령</option>
             </select>
             <div>
               <div>
-                  <div>
                   {items.length === 0 ? (
                     <div>
                       <p>장바구니가 비었습니다.</p>
@@ -73,8 +85,38 @@ const Order = () => {
                       ))}
                     </ul>
                   )}
-                </div>
               </div>    
+            </div>
+            <div>
+                <h2>결제정보</h2>
+                  <div onChange={(e) => setSelectPay(e.target.value)}>
+                    <label>
+                      <input type="radio" value="1" name="pay"/>
+                      신용카드
+                    </label>
+                    <label>
+                      <input type="radio" value="2" name="pay"/>
+                      계좌이체
+                    </label>
+                    <label>
+                      <input type="radio" value="3" name="pay"/>
+                      휴대폰결제
+                    </label>
+                    <label>
+                      <input type="radio" value="4" name="pay"/>
+                      네이버페이
+                    </label>
+                    <label>
+                      <input type="radio" value="5" name="pay"/>
+                      카카오페이
+                    </label>
+                  </div>
+                <div id="dropdown_menu">
+                </div>
+            </div>
+            <div>
+                총 금액: {totalAmount.toLocaleString()}원
+                <button onClick={pass}>주문하기</button>
             </div>
         </div>
     </>
