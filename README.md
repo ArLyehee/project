@@ -8,15 +8,15 @@
 
 프론트
 
-cd front -> npm run dev
+cd front -> (npm install) -> npm run dev
 
 백
 
 cd back
 
-npm install express cors mariadb
+npm install -> (express cors mariadb)
 
-npm install nodemon
+(npm install nodemon)
 
 npm install dotenv
 
