@@ -42,6 +42,10 @@ function Cart() {
   };
 
     async function updateAmount(id, newAmount) {
+    // if (newAmount < 1) {
+    //   alert('최소 수량은 1개입니다.');
+    //   return;
+    // }
     try{
       const response = await fetch('http://localhost:8080/cart/update', {
         method: 'PUT',
@@ -86,7 +90,9 @@ function Cart() {
                   <p>{item.name}</p>
                   <p>{item.price.toLocaleString()}원</p>
                   <div>
-                    <button onClick={() => updateAmount(item.id, item.amount - 1)}>-</button>
+                    {/* <button onClick={() => updateAmount(item.id, item.amount - 1)}>-</button> */}
+                    <button onClick={() => updateAmount(item.id, item.amount - 1)}
+                      disabled={item.amount <= 1}>-</button>
                     <span>{item.amount}</span>
                     <button onClick={() => updateAmount(item.id, item.amount + 1)}>+</button>
                   </div>

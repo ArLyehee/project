@@ -19,7 +19,7 @@ const Order = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/order/${userId}`);
+      const response = await fetch(`http://localhost:8080/order/${userId}`);
       const data = await response.json();
       
       if (Array.isArray(data)) {

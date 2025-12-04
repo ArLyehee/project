@@ -1,12 +1,8 @@
 const express = require('express');
-const cors = require('cors');
 const pool = require('./db');
-const app = express();
+const router = express.Router();
 
-app.use(express.json())
-app.use(cors())
-
-app.get('/cart/:userId', async(req, res)=>{
+router.get('/:userId', async(req, res)=>{
     try{
         const {userId} = req.params;
 
@@ -23,14 +19,14 @@ app.get('/cart/:userId', async(req, res)=>{
     }
 })
 
-app.put('/cart/update', async(req,res)=>{
+router.put('/update', async(req,res)=>{
     await pool.query('UPDATE cart SET amount = ? WHERE pId = ?',
         [req.body.amount, req.body.pId]
     )
     res.send({"result":true})
 })
 
-app.delete('/cart/delete', async(req,res)=>{
+router.delete('/delete', async(req,res)=>{
     const pId = req.body.pId
     await pool.query('DELETE FROM cart WHERE pId =?',
         [pId]
@@ -38,12 +34,4 @@ app.delete('/cart/delete', async(req,res)=>{
     res.send({"result":true})
 })
 
-// app.listen(8080,()=>{
-//     console.log("potato server")
-// })
-
-app.get('/', (req, res) => {
-  res.send('cart 서버 응답');
-});
-
-module.exports = app;
+module.exports = router;
