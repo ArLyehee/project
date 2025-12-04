@@ -26,4 +26,5 @@ package.json 에 11번째 줄
 npm run dev
 
 일단 뼈대만 만들어 놨습니당
-![alt text](image.png)
+![alt text](cart.png)
+![alt text](order.png)
