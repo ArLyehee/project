@@ -10,6 +10,10 @@ const Order = () => {
   const location = useLocation();
   const userId = 'user213';
 
+  const [zipCode, setZipCode] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
+
   useEffect(() => {
       if(location.state?.selectedItems){
         setItems(location.state.selectedItems);
@@ -18,6 +22,17 @@ const Order = () => {
         navigate('/cart');
       }
     }, [location, navigate]);
+
+  const openAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: function(data) {
+        let addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+        setZipCode(data.zonecode);
+        setAddress(addr);
+        document.getElementById('detailAddress').focus();
+      }
+    }).open();
+  };
 
   const cartPage = () => {
     window.history.back();
@@ -36,12 +51,29 @@ const Order = () => {
     <>
     <h2>주문/결제</h2>
     <button onClick={cartPage}>뒤로 돌아가기</button>
+        <div className="section shipping-info">
+        <label>우편번호:</label>
         <div>
-            배송지명: <input type="text"/>
-            받는분:<input type="text"/>
-            연락처:<input type="text"/>
-            주 소:<input type="text"/>
+          <input type="text" value={zipCode} readOnly placeholder="우편번호"/>
+          <button type="button" onClick={openAddressSearch}>주소 검색</button>
         </div>
+        <label>주 소:</label>
+        <input type="text" value={address} readOnly placeholder="주소"/>
+        <label>상세주소:</label>
+        <input 
+          type="text" 
+          id="detailAddress"
+          value={detailAddress}
+          onChange={(e) => setDetailAddress(e.target.value)}
+          placeholder="상세주소"/>
+        <br/>
+        <label>배송지명:</label>
+        <input type="text" placeholder="배송지명"/>
+        <label>받는분:</label>
+        <input type="text" placeholder="받는분"/>
+        <label>연락처:</label>
+        <input type="text" placeholder="연락처"/>
+      </div>
         <div>
             <h2>배송 요청사항</h2>
             <select>
