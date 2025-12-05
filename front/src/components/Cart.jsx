@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 function Cart() {
 
   const [items, setItems] = useState([]);
+  const [checkItem,setCheckItem] = useState([]);
   const navigate = useNavigate();
   const userId = 'user213';
 
@@ -18,8 +19,23 @@ function Cart() {
       const response = await fetch(`http://localhost:8080/cart/${userId}`);
       const data = await response.json();
       setItems(data);
+      setCheckItem(data.map(item => item.id));
     } catch (error) {
       console.error('장바구니 조회 실패:', error);
+    }
+  };
+  
+  const checkProduct = (id) =>{
+    setCheckItem(prev=>prev.includes(id)
+      ? prev.filter(item=>item!==id)
+      : [...prev, id]);
+  };
+
+  const allCheckProduct = (e)=>{
+    if(e.target.checked){
+      setCheckItem(items.map(item=>item.id));
+    } else{
+      setCheckItem([]);
     }
   };
 
@@ -42,10 +58,6 @@ function Cart() {
   };
 
     async function updateAmount(id, newAmount) {
-    // if (newAmount < 1) {
-    //   alert('최소 수량은 1개입니다.');
-    //   return;
-    // }
     try{
       const response = await fetch('http://localhost:8080/cart/update', {
         method: 'PUT',
@@ -63,10 +75,19 @@ function Cart() {
     }
   };
 
-  const totalAmount = items.reduce((sum, item) => sum + item.price * item.amount, 0);
+  const totalAmount = items
+    .filter(item => checkItem.includes(item.id))
+    .reduce((sum, item) => sum + item.price * item.amount, 0);
+
+    const checkedCount = checkItem.length;
 
   const order = () => {
-    navigate('/order');
+    if(checkedCount === 0){
+      alert('주문할 상품을 선택해주세요');
+      return;
+    }
+    const selectedItems = items.filter(item => checkItem.includes(item.id));
+    navigate('/order', { state: { selectedItems: selectedItems } });
   }
   return (
     <>
@@ -79,11 +100,21 @@ function Cart() {
             <p>장바구니가 비었습니다.</p>
           </div>
         ):(
+          <>
+          <div>
+            <label>
+              <input type="checkbox" 
+              onChange={allCheckProduct} 
+              checked={checkedCount === items.length}/>전체선택({checkedCount}/{items.length})
+            </label>
+          </div>
           <ul>
             {items.map((item)=>(
               <li key={item.id}>
                 <div>
-                  <input type="checkbox"/>
+                  <input type="checkbox" 
+                    checked={checkItem.includes(item.id)} 
+                    onChange={() => checkProduct(item.id)}/>
                   <img src={item.image} alt={item.name}
                   style={{
                   width: '100px',
@@ -106,6 +137,7 @@ function Cart() {
               </li>
             ))}
           </ul>
+          </>
         )}
       </div>
       <div>

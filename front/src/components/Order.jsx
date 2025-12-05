@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 
 const Order = () => {
@@ -7,31 +7,21 @@ const Order = () => {
   const [items, setItems] = useState([]);
   const [selectPay, setSelectPay] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const userId = 'user213';
 
   useEffect(() => {
-      fetchCart();
-    }, []);
+      if(location.state?.selectedItems){
+        setItems(location.state.selectedItems);
+      } else {
+        alert('주문할 상품이 없습니다. 다시 선택해주세요.');
+        navigate('/cart');
+      }
+    }, [location, navigate]);
 
   const cartPage = () => {
     window.history.back();
   }
-
-  const fetchCart = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/order/${userId}`);
-      const data = await response.json();
-      
-      if (Array.isArray(data)) {
-        setItems(data);
-      } else {
-        console.error('데이터 형식 오류:', data);
-        setItems([]);
-      }
-    } catch (error) {
-      console.error('장바구니 조회 실패:', error);
-    }
-  };
 
   function pass(){
     if (!selectPay) {
