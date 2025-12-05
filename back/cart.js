@@ -7,11 +7,11 @@ router.get('/:userId', async(req, res)=>{
         const {userId} = req.params;
 
         const rows = await pool.query(
-            `SELECT pID as id, 
+            `SELECT pId as id, 
                 pName as name, 
                 pPrice as price,
                 amount as amount,
-                pImage as image
+                img as image
                 FROM cart WHERE id = ?`, [userId]);
 
         res.status(200).json(rows);
