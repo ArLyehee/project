@@ -2,7 +2,6 @@ const express = require('express');
 const pool = require('./db');
 const router = express.Router();
 
-
 router.post('/', async(req, res) => {
     console.log('주문 요청 받음:', req.body);
     const connection = await pool.getConnection();
@@ -23,6 +22,21 @@ router.post('/', async(req, res) => {
             totalAmount
         } = req.body;
 
+        for (const item of items) {
+            const product = await connection.query(
+                `SELECT stock FROM products WHERE pId = ?`,
+                [item.id]
+            );
+
+            if (!product || product.length === 0) {
+                throw new Error(`상품을 찾을 수 없습니다: ${item.name}`);
+            }
+
+            if (product[0].stock < item.amount) {
+                throw new Error(`재고가 부족합니다: ${item.name} (현재 재고: ${product[0].stock}개, 주문: ${item.amount}개)`);
+            }
+        }
+
         const orderResult = await connection.query(
             `INSERT INTO orders (
                 id, 
@@ -42,7 +56,6 @@ router.post('/', async(req, res) => {
         );
 
         const orderId = Number(orderResult.insertId);
-        console.log('주문 ID:', orderId);
 
         for (const item of items) {
             await connection.query(
@@ -55,6 +68,13 @@ router.post('/', async(req, res) => {
                 ) VALUES (?, ?, ?, ?, ?)`,
                 [orderId, item.id, item.name, item.price, item.amount]
             );
+
+            await connection.query(
+                `UPDATE products SET stock = stock - ? WHERE pId = ?`,
+                [item.amount, item.id]
+            );
+            
+            console.log(`재고 감소: ${item.name} - ${item.amount}개`);
         }
 
         for (const item of items) {
@@ -65,6 +85,7 @@ router.post('/', async(req, res) => {
         }
 
         await connection.commit();
+        console.log('주문 완료! 재고 업데이트 완료!');
         res.status(200).json({ 
             success: true, 
             orderId: orderId,
@@ -92,7 +113,7 @@ router.put('/stock', async(req, res)=> {
             [pId]);
 
         if(!product || product.length === 0){
-            return res.status(404).json({error:'재고 수정 실패'});
+            return res.status(404).json({error:'상품을 찾을 수 없습니다'});
         }
         const currentStock = product[0].stock;
             
@@ -106,10 +127,10 @@ router.put('/stock', async(req, res)=> {
         );
         
         res.status(200).json({message: '재고 업데이트 성공'});
-        }catch(error){
-            console.error('재고 업데이트 에러:', error);
-            res.status(500).json({error: '재고 수량 업데이트 실패'});
-        }
-    })
+    }catch(error){
+        console.error('재고 업데이트 에러:', error);
+        res.status(500).json({error: '재고 수량 업데이트 실패'});
+    }
+})
 
 module.exports = router;
