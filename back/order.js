@@ -83,4 +83,33 @@ router.post('/', async(req, res) => {
     }
 });
 
+router.put('/stock', async(req, res)=> {
+    try{
+        const { pId, amount } = req.body;
+
+        const product = await pool.query(
+            `SELECT stock FROM products WHERE pId = ?`,
+            [pId]);
+
+        if(!product || product.length === 0){
+            return res.status(404).json({error:'재고 수정 실패'});
+        }
+        const currentStock = product[0].stock;
+            
+        if (currentStock < amount) {
+            return res.status(400).json({error: '재고가 부족합니다'});
+        }
+
+        await pool.query(
+            `UPDATE products SET stock = stock - ? WHERE pId = ?`,
+            [amount, pId]
+        );
+        
+        res.status(200).json({message: '재고 업데이트 성공'});
+        }catch(error){
+            console.error('재고 업데이트 에러:', error);
+            res.status(500).json({error: '재고 수량 업데이트 실패'});
+        }
+    })
+
 module.exports = router;
